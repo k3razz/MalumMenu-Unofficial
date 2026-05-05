@@ -167,15 +167,6 @@ public partial class MalumMenu : BasePlugin
                                     new AcceptableValueRange<int>(1, 6)
                                 ));
 
-
-        killSwitchLvl = Config.Bind("MalumMenu.Overload",
-                                "DefaultKillSwitchLevel",
-                                1,
-                                new ConfigDescription(
-                                    "Default level used by kill switch. Each level adds 500 ms to the max allowed ping before overload stops. Helps avoid lagging / disconnects. IMPORTANT: Only goes from level 1 (500 ms) to 6 (3000 ms)",
-                                    new AcceptableValueRange<int>(1, 6)
-                                ));
-
         spamMessage = Config.Bind("MalumMenu.Chat",
                                 "SpamMessage",
                                 "Edit this message in MalumMenuUnofficial.cfg!",
