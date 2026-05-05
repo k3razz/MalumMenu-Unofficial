@@ -14,7 +14,8 @@
 
 | Mod Version | Among Us - Version | Link |
 |----------|-------------|-----------------|
-| v1.3 (Unofficial) | 17.3 ( 2026.3.31 ) | [Download](https://github.com/f1xx00rs/MalumMenu-Unofficial/releases/tag/v1.3) |
+| v1.3.1 | 17.3 ( 2026.3.31 ) | [Download](https://github.com/f1xx00rs/MalumMenu-Unofficial/releases/tag/v1.3) |
+| v1.3 | 17.3 ( 2026.3.31 ) | [Download](https://github.com/f1xx00rs/MalumMenu-Unofficial/releases/tag/v1.3) |
 
 # ⬇️ Installation
 
