@@ -46,6 +46,8 @@ public class ESPTab : ITab
         CheatToggles.taskArrows = GUILayout.Toggle(CheatToggles.taskArrows, " Task Arrows");
 
         CheatToggles.revealVotes = GUILayout.Toggle(CheatToggles.revealVotes, " Reveal Votes");
+        
+        CheatToggles.PlayerColorDot = GUILayout.Toggle(CheatToggles.PlayerColorDot, " Player Color Dot");
 
         CheatToggles.seeLobbyInfo = GUILayout.Toggle(CheatToggles.seeLobbyInfo, " See Lobby Info");
     }
