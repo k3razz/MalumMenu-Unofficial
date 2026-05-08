@@ -2,10 +2,24 @@ using UnityEngine;
 using Sentry.Internal.Extensions;
 
 namespace MalumMenu;
+
 public static class MalumESP
 {
     private static bool _freecamActive;
     private static bool _resolutionChangeNeeded;
+
+    public static string PlayerColorDot(int colorId)
+    {
+        if (!CheatToggles.PlayerColorDot)
+            return "";
+
+        Color color = Palette.PlayerColors[colorId];
+
+        string hexColor = ColorUtility.ToHtmlStringRGB(color);
+
+        return $"<size=80%><color=#{hexColor}>●</color></size> ";
+    }
+
     public static void SporeCloudVision(Mushroom mushroom)
     {
         if (CheatToggles.noShadows)
@@ -88,8 +102,9 @@ public static class MalumESP
 
                 if (data.IsNull() || data.Disconnected || data.Outfits[PlayerOutfitType.Default].IsNull()) continue;
 
-                // Update the player's nametag appropriately
-                playerState.NameText.text = Utils.GetNameTag(data, data.DefaultOutfit.PlayerName);
+                playerState.NameText.text =
+                    PlayerColorDot(data.DefaultOutfit.ColorId) +
+                    Utils.GetNameTag(data, data.DefaultOutfit.PlayerName);
 
                 // Move and resize the nametag to prevent it overlapping with colorblind text
                 if (CheatToggles.seeRoles && CheatToggles.seePlayerInfo)
@@ -116,7 +131,11 @@ public static class MalumESP
     {
         try
         {
-            playerPhysics.myPlayer.cosmetics.SetName(Utils.GetNameTag(playerPhysics.myPlayer.Data, playerPhysics.myPlayer.CurrentOutfit.PlayerName));
+            playerPhysics.myPlayer.cosmetics.SetName(
+                PlayerColorDot(playerPhysics.myPlayer.Data.DefaultOutfit.ColorId) +
+                Utils.GetNameTag(playerPhysics.myPlayer.Data, playerPhysics.myPlayer.CurrentOutfit.PlayerName)
+            );
+
             // Move the nameText up to prevent it overlapping with colorblind text
             if (CheatToggles.seeRoles && CheatToggles.seePlayerInfo)
             {
@@ -138,7 +157,9 @@ public static class MalumESP
         try
         {
             // Update the player's nametag appropriately
-            chatBubble.NameText.text = Utils.GetNameTag(chatBubble.playerInfo, chatBubble.NameText.text, true);
+            chatBubble.NameText.text =
+                PlayerColorDot(chatBubble.playerInfo.DefaultOutfit.ColorId) +
+                Utils.GetNameTag(chatBubble.playerInfo, chatBubble.NameText.text, true);
 
             // Adjust the chatBubble's size to the new nametag to prevent issues
             chatBubble.NameText.ForceMeshUpdate(true, true);
