@@ -1,5 +1,9 @@
 <h1 align="center">MalumMenu Unofficial</h1>
 <p align="center">
+  <a href="https://discord.gg/cFXmk78w5X">
+    <img hspace="6" src="https://img.shields.io/badge/Join%20Us%20on-Discord-blue?style=flat&logo=discord" alt="Discord">
+  </a>
+<p align="center">
   <b>An easy-to-use Among Us cheat menu (Unofficial Fork) with a simple GUI and lots of useful modules.</b>
 </p>
 
