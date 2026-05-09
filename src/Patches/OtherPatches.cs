@@ -27,55 +27,6 @@ public static class Constants_GetPlatformData
     }
 }
 
-[HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), new[] { typeof(PlayerControl), typeof(DisconnectReasons) })]
-public static class GameData_HandleDisconnect
-{
-    public static HashSet<int> disconnectQueue = new();
-
-    // Prefix patch of GameData.HandleDisconnect to keep track of successful overloads
-    public static void Prefix(PlayerControl player)
-    {
-        if (!CheatToggles.runOverload) return;
-
-        NetworkedPlayerInfo playerData = player?.Data;
-        if (playerData == null) return;
-
-        bool isTarget = OverloadUI.currentTargets.Contains(playerData);
-
-        if (isTarget) disconnectQueue.Add(playerData.ClientId);
-    }
-
-    // Postfix patch of GameData.HandleDisconnect to keep track of successful overloads
-    // (Avoids race-condition double counting)
-    public static void Postfix(PlayerControl player)
-    {
-        if (!CheatToggles.runOverload) return;
-
-        NetworkedPlayerInfo playerData = player?.Data;
-        if (playerData == null) return;
-
-        int clientId = player.Data.ClientId;
-
-        if (disconnectQueue.Contains(clientId))
-        {
-            OverloadUI.numSuccesses++;
-
-            if (CheatToggles.olLogDisconnect)
-            {
-                int total = OverloadUI.currentTargets.Count // Targets still connected
-                            + OverloadUI.numSuccesses // Targets already crashed
-                            - disconnectQueue.Count; // Pending disconnect logs (Avoids race-condition double counting)
-
-                string colorStr = ColorUtility.ToHtmlStringRGB(Color.green);
-
-                OverloadUI.LogConsole($"> <b><color=#{colorStr}>!! {playerData.DefaultOutfit.PlayerName} (ID : {playerData.ClientId}) Disconnected !! - [{OverloadUI.numSuccesses}/{total}]</color></b>");
-            }
-
-            disconnectQueue.Remove(clientId);
-        }
-    }
-}
-
 [HarmonyPatch(typeof(FreeChatInputField), nameof(FreeChatInputField.UpdateCharCount))]
 public static class FreeChatInputField_UpdateCharCount
 {
