@@ -3,7 +3,7 @@
   <a href="https://discord.gg/cFXmk78w5X">
     <img hspace="6" src="https://img.shields.io/badge/Join%20Us%20on-Discord-blue?style=flat&logo=discord" alt="Discord">
   </a>
- <a href="https://github
+ <a href="https://github.
 com/f1xx00rs/MalumMenu-Unofficial/releases">
     <img hspace="6" src="https://img.shields.io/github/downloads/f1xx00rs/MalumMenu-Unofficial/total?style=flat&logo=github&label=Total%20Downloads&color=2ECC71" alt="Downloads">
 </p>
