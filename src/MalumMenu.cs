@@ -150,7 +150,6 @@ public partial class MalumMenu : BasePlugin
         // UI
         menuUI = AddComponent<MenuUI>();
         consoleUI = AddComponent<ConsoleUI>();
-        overloadUI = AddComponent<OverloadUI>();
         doorsUI = AddComponent<DoorsUI>();
         tasksUI = AddComponent<TasksUI>();
         // rolesUI = AddComponent<RolesUI>();
