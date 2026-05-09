@@ -124,12 +124,6 @@ public class MenuUI : MonoBehaviour
             CheatToggles.freecam = false;
             CheatToggles.killPlayer = false;
             CheatToggles.callMeeting = false;
-
-            if (CheatToggles.runOverload)
-            {
-                OverloadUI.StopOverload();
-                OverloadHandler.ClearCustomTargets();
-            }
         }
 
         // Some cheats only work if the ship exists, so they are turned off if it does not
