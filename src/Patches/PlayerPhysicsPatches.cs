@@ -30,11 +30,6 @@ public static class PlayerPhysics_LateUpdate
         MalumPPMCheats.SetFakeRolePPM();
         // MalumPPMCheats.ForceRolePPM();
 
-        if (__instance.AmOwner)
-        {
-            OverloadHandler.Run();
-        }
-
         TracersHandler.DrawPlayerTracer(__instance);
 
         GameObject[] bodyObjects = GameObject.FindGameObjectsWithTag("DeadBody");
