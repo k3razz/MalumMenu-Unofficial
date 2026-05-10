@@ -18,6 +18,7 @@ public class MenuUI : MonoBehaviour
     private void Start()
     {
         // Add all tabs on start
+        _tabs.Add(new AboutTab());
         _tabs.Add(new MovementTab());
         _tabs.Add(new ESPTab());
         _tabs.Add(new RolesTab());
