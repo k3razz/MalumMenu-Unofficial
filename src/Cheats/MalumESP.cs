@@ -10,8 +10,6 @@ public static class MalumESP
     private static bool _freecamActive;
     private static bool _resolutionChangeNeeded;
 
-    private static Rect _hostRect;
-
     public static string PlayerColorDot(int colorId)
     {
         if (!CheatToggles.PlayerColorDot)
@@ -226,82 +224,5 @@ public static class MalumESP
 
             _freecamActive = false;
         }
-    }
-    
-    // Host window
-    public static void DrawHost()
-    {
-        if (!CheatToggles.drawHost)
-            return;
-
-        try
-        {
-            PlayerControl host = null;
-
-            foreach (var p in PlayerControl.AllPlayerControls)
-            {
-                if (p.OwnerId == AmongUsClient.Instance.HostId)
-                {
-                    host = p;
-                    break;
-                }
-            }
-    
-            // if host = null, we wont draw the host window, bcuz that would be cringe
-            if (host == null)
-                return;
-    
-            string hostName =
-                host == PlayerControl.LocalPlayer ? "You" :
-                host.Data.PlayerName;
-    
-            string text = $"Host: {hostName}";
-    
-            GUIStyle style = new GUIStyle(GUI.skin.label)
-            {
-                fontSize = 14,
-                normal = { textColor = Color.white },
-                alignment = TextAnchor.MiddleCenter,
-                wordWrap = true
-            };
-    
-            Vector2 textSize = style.CalcSize(new GUIContent(text));
-    
-            float paddingX = 20f;
-            float paddingY = 10f;
-    
-            float width = Mathf.Clamp(textSize.x + paddingX, 120f, 300f);
-            float height = style.CalcHeight(new GUIContent(text), width) + paddingY;
-    
-            if (_hostRect == default)
-                _hostRect = new Rect(10, 10, width, height);
-    
-            _hostRect.width = width;
-            _hostRect.height = height;
-    
-            _hostRect = GUI.Window(
-                1337,
-                _hostRect,
-                (GUI.WindowFunction)DrawWindow,
-                ""
-            );
-    
-            void DrawWindow(int id)
-            {
-                GUI.color = new Color(0f, 0f, 0f, 0.6f);
-                GUI.Box(new Rect(0, 0, _hostRect.width, _hostRect.height), "");
-    
-                GUI.color = Color.white;
-    
-                GUI.Label(
-                    new Rect(0, 0, _hostRect.width, _hostRect.height),
-                    text,
-                    style
-                );
-    
-                GUI.DragWindow(new Rect(0, 0, _hostRect.width, _hostRect.height));
-            }
-        }
-        catch { }
     }
 }

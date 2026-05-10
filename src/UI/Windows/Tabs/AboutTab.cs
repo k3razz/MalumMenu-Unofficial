@@ -4,7 +4,7 @@ namespace MalumMenu;
 
 public class AboutTab : ITab
 {
-    public string name => "About";
+    public string name => "Links & Credits";
 
     private static readonly Color ButtonNormal = new Color(0.176f, 0.306f, 0.702f);
     private static readonly Color ButtonHover  = new Color(0.176f, 0.518f, 0.702f);

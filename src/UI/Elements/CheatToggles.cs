@@ -49,7 +49,7 @@ public struct CheatToggles
     public static bool revealVotes;
     public static bool seeLobbyInfo;
     public static bool PlayerColorDot;
-    public static bool drawHost;
+    public static bool ShowHost;
 
     // Camera
     public static bool spectate;

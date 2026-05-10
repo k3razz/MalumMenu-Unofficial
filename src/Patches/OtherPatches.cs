@@ -116,10 +116,32 @@ public static class PingTracker_Update
         __instance.text.alignment = TMPro.TextAlignmentOptions.Center;
 
         int ping = Utils.GetPing();
-        string pingText = Utils.GetColoredPingText($"PING: {ping} ms", ping);
+        string pingText = Utils.GetColoredPingText($"{ping} MS", ping);
 
-        string infoLine = $"{pingText}";
-        string creditLine = "MalumMenu by scp222thj & Astral";
+        string hostText = "";
+
+        if (CheatToggles.ShowHost && AmongUsClient.Instance != null)
+        {
+            PlayerControl host = null;
+
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.OwnerId == AmongUsClient.Instance.HostId)
+                {
+                    host = player;
+                    break;
+                }
+            }
+
+            if (host != null)
+            {
+                string hostName = host.AmOwner ? "You" : host.Data.PlayerName;
+                hostText = $" | Host: {hostName}";
+            }
+        }
+
+        string infoLine = $"{pingText}{hostText}";
+        string creditLine = "MalumMenu Unofficial by f1xx0rs";
 
         if (AmongUsClient.Instance != null && AmongUsClient.Instance.IsGameStarted)
         {

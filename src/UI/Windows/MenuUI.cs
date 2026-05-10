@@ -18,7 +18,6 @@ public class MenuUI : MonoBehaviour
     private void Start()
     {
         // Add all tabs on start
-        _tabs.Add(new AboutTab());
         _tabs.Add(new MovementTab());
         _tabs.Add(new ESPTab());
         _tabs.Add(new RolesTab());
@@ -31,6 +30,7 @@ public class MenuUI : MonoBehaviour
         _tabs.Add(new ModesTab());
         _tabs.Add(new ConfigTab());
         _tabs.Add(new TeleportTab());
+        _tabs.Add(new AboutTab());
         // _tabs.Add(new HideNSeekTab());
 
         // Instantiate 2D area of MenuUI
@@ -194,8 +194,6 @@ public class MenuUI : MonoBehaviour
                 "MalumMenu Unofficial v" + MalumMenu.malumVersion
             );
         }
-
-        MalumESP.DrawHost();
     }
 
     public void WindowFunction(int windowID)

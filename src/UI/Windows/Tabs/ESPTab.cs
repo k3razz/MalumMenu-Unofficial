@@ -50,7 +50,7 @@ public class ESPTab : ITab
         CheatToggles.PlayerColorDot = GUILayout.Toggle(CheatToggles.PlayerColorDot, " Player Color Dot");
 
         CheatToggles.seeLobbyInfo = GUILayout.Toggle(CheatToggles.seeLobbyInfo, " See Lobby Info");
-        CheatToggles.drawHost = GUILayout.Toggle(CheatToggles.drawHost, " Show Host");
+        CheatToggles.ShowHost = GUILayout.Toggle(CheatToggles.ShowHost, " Show Host");
     }
 
     private void DrawCamera()
