@@ -228,8 +228,7 @@ public static class MalumESP
         }
     }
     
-    private static float _lastPing;
-
+    // Host window
     public static void DrawHost()
     {
         if (!CheatToggles.drawHost)
@@ -247,23 +246,25 @@ public static class MalumESP
                     break;
                 }
             }
-
+    
+            // if host = null, we wont draw the host window, bcuz that would be cringe
+            if (host == null)
+                return;
+    
             string hostName =
-                host == null ? "Unknown" :
                 host == PlayerControl.LocalPlayer ? "You" :
                 host.Data.PlayerName;
-
+    
             string text = $"Host: {hostName}";
-
+    
             GUIStyle style = new GUIStyle(GUI.skin.label)
             {
                 fontSize = 14,
-            normal = { textColor = Color.white },
-                wordWrap = true,
-                alignment = TextAnchor.MiddleCenter
+                normal = { textColor = Color.white },
+                alignment = TextAnchor.MiddleCenter,
+                wordWrap = true
             };
-
-            // dynamic size calculation
+    
             Vector2 textSize = style.CalcSize(new GUIContent(text));
     
             float paddingX = 20f;
@@ -272,11 +273,9 @@ public static class MalumESP
             float width = Mathf.Clamp(textSize.x + paddingX, 120f, 300f);
             float height = style.CalcHeight(new GUIContent(text), width) + paddingY;
     
-            // init position only once
             if (_hostRect == default)
                 _hostRect = new Rect(10, 10, width, height);
     
-            // update size every frame (important for long names)
             _hostRect.width = width;
             _hostRect.height = height;
     
@@ -286,16 +285,16 @@ public static class MalumESP
                 (GUI.WindowFunction)DrawWindow,
                 ""
             );
-
+    
             void DrawWindow(int id)
             {
                 GUI.color = new Color(0f, 0f, 0f, 0.6f);
                 GUI.Box(new Rect(0, 0, _hostRect.width, _hostRect.height), "");
-
+    
                 GUI.color = Color.white;
-
+    
                 GUI.Label(
-                    new Rect(5, 5, _hostRect.width - 10, _hostRect.height - 10),
+                    new Rect(0, 0, _hostRect.width, _hostRect.height),
                     text,
                     style
                 );
