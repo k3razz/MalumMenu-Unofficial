@@ -178,13 +178,23 @@ public class MenuUI : MonoBehaviour
 
     public void OnGUI()
     {
-        if (!isGUIActive || MalumMenu.isPanicked) return;
+        if (MalumMenu.isPanicked)
+            return;
 
         InitStyles();
-
         UIHelpers.ApplyUIColor();
+    
+        if (isGUIActive)
+        {
+            _windowRect = GUI.Window(
+                (int)WindowId.MenuUI,
+                _windowRect,
+                (GUI.WindowFunction)WindowFunction,
+                "MalumMenu Unofficial v" + MalumMenu.malumVersion
+            );
+        }
 
-        _windowRect = GUI.Window((int)WindowId.MenuUI, _windowRect, (GUI.WindowFunction)WindowFunction, "MalumMenu Unofficial v" + MalumMenu.malumVersion);
+        MalumESP.DrawHost();
     }
 
     public void WindowFunction(int windowID)

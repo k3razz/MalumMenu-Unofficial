@@ -1,5 +1,7 @@
 using UnityEngine;
 using Sentry.Internal.Extensions;
+using TMPro;
+using System.Linq;
 
 namespace MalumMenu;
 
@@ -7,6 +9,8 @@ public static class MalumESP
 {
     private static bool _freecamActive;
     private static bool _resolutionChangeNeeded;
+
+    private static Rect _hostRect;
 
     public static string PlayerColorDot(int colorId)
     {
@@ -24,65 +28,67 @@ public static class MalumESP
     {
         if (CheatToggles.noShadows)
         {
-            // Change the Z axis position of spore clouds as to make players appear above them
-
-            mushroom.sporeMask.transform.position = new Vector3(mushroom.sporeMask.transform.position.x, mushroom.sporeMask.transform.position.y, -1);
+            mushroom.sporeMask.transform.position = new Vector3(
+                mushroom.sporeMask.transform.position.x,
+                mushroom.sporeMask.transform.position.y,
+                -1
+            );
             return;
         }
 
-        // Normal Z axis position: 5f
-        mushroom.sporeMask.transform.position = new Vector3(mushroom.sporeMask.transform.position.x, mushroom.sporeMask.transform.position.y, 5f);
+        mushroom.sporeMask.transform.position = new Vector3(
+            mushroom.sporeMask.transform.position.x,
+            mushroom.sporeMask.transform.position.y,
+            5f
+        );
     }
 
     public static bool IsFullbrightActive()
     {
-        // Fullbright is automatically activated when zooming out, spectating other players, or "freecamming"
-        // This is done to avoid issues with shadows
-
-        return CheatToggles.noShadows || Camera.main.orthographicSize > 3f || Camera.main.gameObject.GetComponent<FollowerCamera>().Target != PlayerControl.LocalPlayer;
+        return CheatToggles.noShadows ||
+               Camera.main.orthographicSize > 3f ||
+               Camera.main.gameObject.GetComponent<FollowerCamera>().Target != PlayerControl.LocalPlayer;
     }
 
     public static void ZoomOut(HudManager hudManager)
     {
         if (CheatToggles.zoomOut)
         {
-            if (hudManager.Chat.IsOpenOrOpening || PlayerCustomizationMenu.Instance || (Utils.isLobby && (FriendsListUI.Instance.IsOpen ||
-                GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.active || GameStartManager.Instance.RulesEditPanel))) return;
+            if (hudManager.Chat.IsOpenOrOpening ||
+                PlayerCustomizationMenu.Instance ||
+                (Utils.isLobby &&
+                (FriendsListUI.Instance.IsOpen ||
+                 GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.active ||
+                 GameStartManager.Instance.RulesEditPanel)))
+                return;
 
             _resolutionChangeNeeded = true;
 
-            if (Input.GetAxis("Mouse ScrollWheel") < 0f ) // Zoom out
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+            Camera cam = Camera.main;
+
+            if (scroll < 0f)
             {
-
-                // Both the main camera and the UI camera need to be adjusted
-
-                Camera.main.orthographicSize++;
+                cam.orthographicSize++;
                 hudManager.UICamera.orthographicSize++;
-
-                // Utils.AdjustResolution() seems to be needed to properly sync the game's UI
-                // after a change in orthographicSize
-
-                Utils.AdjustResolution();
-
             }
-            else if (Input.GetAxis("Mouse ScrollWheel") > 0f )
+            else if (scroll > 0f)
             {
-                // Zoom in
-                if (!(Camera.main.orthographicSize > 3f)) return; // Never go below the default orthographicSize: 3f
+                if (cam.orthographicSize <= 3f)
+                    return;
 
-                Camera.main.orthographicSize--;
+                cam.orthographicSize--;
                 hudManager.UICamera.orthographicSize--;
-
-                Utils.AdjustResolution();
             }
+
+            Utils.AdjustResolution();
         }
         else
         {
-            // orthographicSize is reset to default value: 3f
             Camera.main.orthographicSize = 3f;
             hudManager.UICamera.orthographicSize = 3f;
 
-            // Utils.AdjustResolution() is invoked one last time to prevent issues with UI
             if (_resolutionChangeNeeded)
             {
                 Utils.AdjustResolution();
@@ -97,16 +103,15 @@ public static class MalumESP
         {
             foreach (var playerState in meetingHud.playerStates)
             {
-                // Fetch the NetworkedPlayerInfo of each playerState
                 var data = GameData.Instance.GetPlayerById(playerState.TargetPlayerId);
 
-                if (data.IsNull() || data.Disconnected || data.Outfits[PlayerOutfitType.Default].IsNull()) continue;
+                if (data.IsNull() || data.Disconnected || data.Outfits[PlayerOutfitType.Default].IsNull())
+                    continue;
 
                 playerState.NameText.text =
                     PlayerColorDot(data.DefaultOutfit.ColorId) +
                     Utils.GetNameTag(data, data.DefaultOutfit.PlayerName);
 
-                // Move and resize the nametag to prevent it overlapping with colorblind text
                 if (CheatToggles.seeRoles && CheatToggles.seePlayerInfo)
                 {
                     playerState.NameText.transform.localPosition = new Vector3(0.33f, 0.08f, 0f);
@@ -119,12 +124,12 @@ public static class MalumESP
                 }
                 else
                 {
-                    // Reset the position and scale of the nametag to default values (they're kinda weird but whatever)
                     playerState.NameText.transform.localPosition = new Vector3(0.3384f, 0.0311f, -0.1f);
                     playerState.NameText.transform.localScale = new Vector3(0.9f, 1f, 1f);
                 }
             }
-        } catch { }
+        }
+        catch { }
     }
 
     public static void PlayerNametags(PlayerPhysics playerPhysics)
@@ -133,88 +138,160 @@ public static class MalumESP
         {
             playerPhysics.myPlayer.cosmetics.SetName(
                 PlayerColorDot(playerPhysics.myPlayer.Data.DefaultOutfit.ColorId) +
-                Utils.GetNameTag(playerPhysics.myPlayer.Data, playerPhysics.myPlayer.CurrentOutfit.PlayerName)
+                Utils.GetNameTag(
+                    playerPhysics.myPlayer.Data,
+                    playerPhysics.myPlayer.CurrentOutfit.PlayerName
+                )
             );
 
-            // Move the nameText up to prevent it overlapping with colorblind text
             if (CheatToggles.seeRoles && CheatToggles.seePlayerInfo)
-            {
                 playerPhysics.myPlayer.cosmetics.nameText.transform.localPosition = new Vector3(0f, 0.186f, 0f);
-            }
             else if (CheatToggles.seeRoles || CheatToggles.seePlayerInfo)
-            {
                 playerPhysics.myPlayer.cosmetics.nameText.transform.localPosition = new Vector3(0f, 0.093f, 0f);
-            }
             else
-            {
-                playerPhysics.myPlayer.cosmetics.nameText.transform.localPosition = new Vector3(0f, 0f, 0f);
-            }
-        } catch { }
+                playerPhysics.myPlayer.cosmetics.nameText.transform.localPosition = Vector3.zero;
+        }
+        catch { }
     }
 
     public static void ChatNametags(ChatBubble chatBubble)
     {
         try
         {
-            // Update the player's nametag appropriately
             chatBubble.NameText.text =
                 PlayerColorDot(chatBubble.playerInfo.DefaultOutfit.ColorId) +
                 Utils.GetNameTag(chatBubble.playerInfo, chatBubble.NameText.text, true);
 
-            // Adjust the chatBubble's size to the new nametag to prevent issues
             chatBubble.NameText.ForceMeshUpdate(true, true);
-            chatBubble.Background.size = new Vector2(5.52f, 0.2f + chatBubble.NameText.GetNotDumbRenderedHeight() + chatBubble.TextArea.GetNotDumbRenderedHeight());
-            chatBubble.MaskArea.size = chatBubble.Background.size - new Vector2(0f, 0.03f);
 
-        } catch { }
+            chatBubble.Background.size = new Vector2(
+                5.52f,
+                0.2f +
+                chatBubble.NameText.GetNotDumbRenderedHeight() +
+                chatBubble.TextArea.GetNotDumbRenderedHeight()
+            );
+
+            chatBubble.MaskArea.size =
+                chatBubble.Background.size - new Vector2(0f, 0.03f);
+        }
+        catch { }
     }
 
     public static void SeeGhostsCheat(PlayerPhysics playerPhysics)
     {
-        try{
-
-            if(playerPhysics.myPlayer.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsDead)
+        try
+        {
+            if (playerPhysics.myPlayer.Data.IsDead &&
+                !PlayerControl.LocalPlayer.Data.IsDead)
             {
                 playerPhysics.myPlayer.Visible = CheatToggles.seeGhosts;
             }
-
-        }catch{}
+        }
+        catch { }
     }
 
     public static void FreecamCheat()
     {
+        Camera cam = Camera.main;
+        FollowerCamera follower = cam.GetComponent<FollowerCamera>();
+
         if (CheatToggles.freecam)
         {
-            // Completely disable FollowerCamera
             if (!_freecamActive)
             {
-
-                Camera.main.gameObject.GetComponent<FollowerCamera>().enabled = false;
-                Camera.main.gameObject.GetComponent<FollowerCamera>().Target = null;
-
+                follower.enabled = false;
+                follower.Target = null;
                 _freecamActive = true;
-
             }
 
-            // Prevent the player from moving while in freecam
             PlayerControl.LocalPlayer.moveable = false;
 
-            // Get keyboard input
-            var movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0.0f);
+            Vector3 move = new Vector3(
+                Input.GetAxis("Horizontal"),
+                Input.GetAxis("Vertical"),
+                0f
+            );
 
-            // Change the camera's position depending on the keyboard input
-            // Speed: 10f
-            Camera.main.transform.position = Camera.main.transform.position + movement * 10f * Time.deltaTime;
-
+            cam.transform.position += move * (10f * Time.deltaTime);
         }
         else
         {
-            // Re-enable FollowerCamera & movement once freecam is disabled
-            if (!_freecamActive) return;
+            if (!_freecamActive)
+                return;
+
             PlayerControl.LocalPlayer.moveable = true;
-            Camera.main.gameObject.GetComponent<FollowerCamera>().enabled = true;
-            Camera.main.gameObject.GetComponent<FollowerCamera>().SetTarget(PlayerControl.LocalPlayer);
+
+            follower.enabled = true;
+            follower.SetTarget(PlayerControl.LocalPlayer);
+
             _freecamActive = false;
         }
+    }
+
+    // =======================
+    // FIXED HOST (FPS STYLE)
+    // =======================
+    private static float _lastPing;
+
+    public static void DrawHost()
+    {
+        if (!CheatToggles.drawHost)
+            return;
+
+        try
+        {
+            PlayerControl host = null;
+
+            foreach (var p in PlayerControl.AllPlayerControls)
+            {
+                if (p.OwnerId == AmongUsClient.Instance.HostId)
+                {
+                    host = p;
+                    break;
+                }
+            }
+    
+            string hostName =
+                host == null ? "Unknown" :
+                host == PlayerControl.LocalPlayer ? "You" :
+                host.Data.PlayerName;
+    
+            string text = $"Host: {hostName}";
+    
+            GUIStyle style = new GUIStyle(GUI.skin.label)
+            {
+                fontSize = 14,
+                normal = { textColor = Color.white },
+                alignment = TextAnchor.MiddleCenter
+            };
+    
+            Vector2 size = style.CalcSize(new GUIContent(text));
+    
+            // 🔥 независимое окно (НЕ зависит от MenuUI)
+            if (_hostRect == default)
+                _hostRect = new Rect(10, 10, size.x + 20, 25);
+    
+            _hostRect = GUI.Window(
+                1337,
+                _hostRect,
+                (GUI.WindowFunction)DrawWindow,
+                " "
+            );
+    
+            void DrawWindow(int id)
+            {
+                // background
+                GUI.color = new Color(0f, 0f, 0f, 0.6f);
+                GUI.Box(new Rect(0, 0, _hostRect.width, 25), "");
+    
+                // text (centered)
+                GUI.color = Color.white;
+                GUI.Label(new Rect(0, 0, _hostRect.width, 25), text, style);
+    
+                // drag area
+                GUI.DragWindow(new Rect(0, 0, _hostRect.width, 25));
+            }
+        }
+        catch { }
     }
 }
