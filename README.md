@@ -6,8 +6,6 @@
  <a href="https://github.
 com/f1xx00rs/MalumMenu-Unofficial/releases">
     <img hspace="6" src="https://img.shields.io/github/downloads/f1xx00rs/MalumMenu-Unofficial/total?style=flat&logo=github&label=Total%20Downloads&color=2ECC71" alt="Downloads">
-  <a href="https://github.com/f1xx00rs/MalumMenu-Unofficial/releases">
-    <img hspace="6" src="https://img.shields.io/github/downloads/f1xx00rs/MalumMenu-Unofficial/total?style=flat&logo=github&label=Total%20Downloads&color=2ECC71" alt="Downloads">
   </a>
 </p>
 <p align="center">
