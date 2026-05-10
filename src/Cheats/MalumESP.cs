@@ -227,10 +227,7 @@ public static class MalumESP
             _freecamActive = false;
         }
     }
-
-    // =======================
-    // FIXED HOST (FPS STYLE)
-    // =======================
+    
     private static float _lastPing;
 
     public static void DrawHost()
@@ -250,46 +247,60 @@ public static class MalumESP
                     break;
                 }
             }
-    
+
             string hostName =
                 host == null ? "Unknown" :
                 host == PlayerControl.LocalPlayer ? "You" :
                 host.Data.PlayerName;
-    
+
             string text = $"Host: {hostName}";
-    
+
             GUIStyle style = new GUIStyle(GUI.skin.label)
             {
                 fontSize = 14,
-                normal = { textColor = Color.white },
+            normal = { textColor = Color.white },
+                wordWrap = true,
                 alignment = TextAnchor.MiddleCenter
             };
+
+            // dynamic size calculation
+            Vector2 textSize = style.CalcSize(new GUIContent(text));
     
-            Vector2 size = style.CalcSize(new GUIContent(text));
+            float paddingX = 20f;
+            float paddingY = 10f;
     
-            // 🔥 независимое окно (НЕ зависит от MenuUI)
+            float width = Mathf.Clamp(textSize.x + paddingX, 120f, 300f);
+            float height = style.CalcHeight(new GUIContent(text), width) + paddingY;
+    
+            // init position only once
             if (_hostRect == default)
-                _hostRect = new Rect(10, 10, size.x + 20, 25);
+                _hostRect = new Rect(10, 10, width, height);
+    
+            // update size every frame (important for long names)
+            _hostRect.width = width;
+            _hostRect.height = height;
     
             _hostRect = GUI.Window(
                 1337,
                 _hostRect,
                 (GUI.WindowFunction)DrawWindow,
-                " "
+                ""
             );
-    
+
             void DrawWindow(int id)
             {
-                // background
                 GUI.color = new Color(0f, 0f, 0f, 0.6f);
-                GUI.Box(new Rect(0, 0, _hostRect.width, 25), "");
-    
-                // text (centered)
+                GUI.Box(new Rect(0, 0, _hostRect.width, _hostRect.height), "");
+
                 GUI.color = Color.white;
-                GUI.Label(new Rect(0, 0, _hostRect.width, 25), text, style);
+
+                GUI.Label(
+                    new Rect(5, 5, _hostRect.width - 10, _hostRect.height - 10),
+                    text,
+                    style
+                );
     
-                // drag area
-                GUI.DragWindow(new Rect(0, 0, _hostRect.width, 25));
+                GUI.DragWindow(new Rect(0, 0, _hostRect.width, _hostRect.height));
             }
         }
         catch { }
